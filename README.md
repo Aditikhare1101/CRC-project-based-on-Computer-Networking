@@ -1,2 +1,1 @@
-# CRC-project-based-on-Computer-Networking
-CRC project based on Computer Networking
+Computer Networking Project based on CRC
