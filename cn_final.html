@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRC Function Example</title>
+    <style>
+        .container {
+            position: relative;
+            width: 50%;
+            margin: 10px;
+        }
+
+        .image {
+            display: block;
+            width: 100%;
+            height: auto;
+            text-align: center;
+            margin-left: 20pc;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            opacity: 0;
+            margin-left: 20pc;
+            transition: .5s ease;
+            background-color: #008CBA;
+        }
+
+        .container:hover .overlay {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .text {
+            color: white;
+
+            font-size: 50px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .result {
+            cursor: pointer;
+            border-radius: 0px 10px;
+            width: 150px;
+            height: 50px;
+            font-size: 15px;
+
+        }
+
+        .result_container {
+            border: 1px solid black;
+            padding: 10px;
+            width: 50%;
+            border-radius: 10px;
+
+        }
+
+        .result_container:hover {
+            background-color: grey;
+            color: oldlace;
+        }
+
+        input {
+            border-radius: 5px;
+            margin: 5px 0px;
+            width: 35%;
+            height: 30px;
+            font-size: large;
+            outline: none;
+        }
+
+        input:hover {
+            background-color: black;
+            color: oldlace;
+        }
+
+        .result:hover {
+            background-color: black;
+            color: oldlace;
+            font-size: 18px;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .videos {
+            display: none;
+            justify-content: space-around;
+            margin: 10px;
+            padding: 5px;
+        }
+
+        .result_display {
+            font-size: 25px;
+            margin: 5px;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <hr>
+    <h1 style="text-align: center; font-size: 30px; color: rgb(8, 90, 105); font-family: Arial, Helvetica, sans-serif;">
+        CYCLIC REDUNDANCY CHECK SIMULATION</h1>
+    <hr>
+    <img style="float: right; height: 10%; width: 20%;" src="crc_logo.png">
+    <h2>Steps involved in CRC:</h2>
+    <p style="font-size: 18px;margin:5px;padding:5px;line-height: 1.6;">
+        1. Choose a Polynomial: Select a generator polynomial, often represented in binary form.<br>
+        2. Initialize the CRC Register: Set the initial value of the CRC register to all zeros.<br>
+        3. Append Zeros to Data: Append a certain number of zeros (equal to the degree of the polynomial minus one) to
+        the end of the data.<br>
+        4. Perform Polynomial Division: XOR the bits of the data with the polynomial. This is often done bit by bit or
+        byte by byte.<br>
+        5. Resulting Remainder: The final value of the CRC register after processing all bits of the data represents
+        the remainder of the polynomial division.<br>
+        6. Append the Remainder: Append the remainder to the original data. This augmented data becomes the transmitted
+        message.<br>
+        7. Transmit the Message: Transmit the augmented data with the CRC information.<br>
+        8. Receiver's CRC Calculation: The receiver performs the same CRC calculation using the received message.<br>If
+        the remainder is zero, the message is likely error-free.If the remainder is non-zero, an error may have
+        occurred during transmission.<br>
+        9. Error Detection: If the receiver's CRC calculation produces a non-zero remainder, an error is detected. The
+        sender may need to retransmit the data.<br>
+    </p>
+
+
+    <div class="container">
+        <img src="crc.png" alt="crc" class="image">
+        <div class="overlay">
+            <div class="text"> <button onclick="hiding()"
+                    style="background-color: #008CBA;outline:none;border: #008CBA;color:whitesmoke;font-size: 25px;">CRC
+                    Processing - click text for video</button> </div>
+        </div>
+    </div>
+    <div id="videos" class="videos">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/A9g6rTMblz4?si=xPzE2BqNCRHqcoqt"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/wQGwfBS3gpk?si=bLwRcN_c_2DWvwQd"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+    </div>
+    <div align="center" style="display:flex;justify-content: space-between;">
+        <div class="result_container">
+            <h1>Sender`s side</h1>
+            <hr>
+            <label for="inputData" style="font-weight: bolder; font-size: 20px;">Enter the bit string to be
+                transmitted:</label>
+            <input type="text" id="inputData">
+            <br>
+            <label for="inputPolynomial" style="font-weight: bolder; font-size: 20px;">Enter the polynomial
+                bits:</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+                type="text" id="inputPolynomial"><br>
+
+            <button class="result" onclick="performCRC()">Perform CRC</button><br>
+
+            <p id="result" class="result_display">
+            </p>
+        </div>
+        <div class="result_container">
+            <h1>Receiver`s side</h1>
+            <hr>
+            <h2>
+                <p id="receiver"></p>
+                <p id="poly"></p>
+                <p id="received"></p>
+                <p id="transmission"></p>
+                <p id="checker"></p>
+            </h2>
+            <button class="result" onclick="detection()">error detection</button>
+            <p id="remainder" class="result_display"></p>
+        </div>
+    </div>
+    <script>
+        function crcEncode(data, polynomial) {
+            let dataLength = data.length;
+            let polynomialLength = polynomial.length;
+
+            let encodedData = data.split('');
+
+            // Append zeros to the data to match the polynomial length
+            encodedData = encodedData.concat(Array(polynomialLength - 1).fill('0'));
+
+            for (let i = 0; i < dataLength; i++) {
+                if (encodedData[i] === '1') {
+                    // XOR operation for polynomial division
+                    for (let j = 0; j < polynomialLength; j++) {
+                        encodedData[i + j] = (encodedData[i + j] === polynomial[j]) ? '0' : '1';
+                    }
+                }
+            }
+
+            return encodedData.join('');
+        }
+
+        function performCRC() {
+            let data = document.getElementById('inputData').value;
+            let polynomial = document.getElementById('inputPolynomial').value;
+
+            let encodedData = crcEncode(data, polynomial);
+
+            document.getElementById('result').innerHTML = "Input bit string: " + data + "<br>" +
+                "Polynomial bits: " + polynomial + "<br>" +
+                "Remainder after division for CRC: " + encodedData + "<br>" +
+                "Sum of Remainder and rough data: " + (data + encodedData.slice(data.length)) + "<br>" +
+                "Final data to be transmitted: " + (data + encodedData.slice(data.length)) + "<br>" + "Final data sent";
+
+            document.getElementById('receiver').value = (data + encodedData.slice(data.length));
+            document.getElementById('poly').value = polynomial;
+            document.getElementById('transmission').innerHTML = "Transmitted data :" + (data + encodedData.slice(data.length));
+            document.getElementById('checker').innerHTML = "Polynomial :" + polynomial;
+
+
+        }
+
+
+        function detection() {
+            let transmitted_bit = document.getElementById('receiver').value;
+            let transmitted_array = transmitted_bit.split('');
+
+            let y = Math.floor(Math.random() * (10 - 0  + 1)) + 0;
+            console.log("y:",y);
+            if (y > 5) {
+                let x = transmitted_array.length;
+
+                console.log(transmitted_array[x - 1]);
+
+                // Toggle the last bit (XOR with '1')
+                transmitted_array[x - 1] = (transmitted_array[x - 1] === '0') ? '1' : '0';
+            }
+
+            document.getElementById('received').innerHTML = "Received data :" + transmitted_array.join(''); // Use join to convert array to string
+            let poly = document.getElementById('poly').value;
+            poly = poly.split('');
+
+            for (let i = 0; i < transmitted_array.length - poly.length + 1; i++) {
+                if (transmitted_array[i] === '1') {
+                    // XOR operation for polynomial division
+                    for (let j = 0; j < poly.length; j++) {
+                        transmitted_array[i + j] = (transmitted_array[i + j] === poly[j]) ? '0' : '1';
+                    }
+                }
+            }
+
+            console.log(transmitted_array);
+            transmitted_array = transmitted_array.join('');
+            let r = parseInt(transmitted_array, 2); 
+
+            if (r === 0) {
+                document.getElementById('remainder').innerHTML = "Remainder:" + r + "<br>" + "Correct data transmitted";
+            } else {
+                document.getElementById('remainder').innerHTML = "Remainder:" + r + "<br>" + "Error in transmitted data";
+            }
+        }
+
+
+
+        function hiding() {
+            let videos = document.getElementById("videos");
+            if (videos.style.display === "none") {
+                videos.style.display = "flex";
+                <!-- videos.style.justify-content =       "space-around"; -->
+                videos.style.margin = "10px";
+                videos.style.padding = "5px";
+            }
+            else {
+                videos.style.display = "none";
+            }
+
+        }
+    </script>
+
+</body>
+
+</html>
